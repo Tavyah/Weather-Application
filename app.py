@@ -10,7 +10,7 @@ def _write_weather_log():
 
     weather_df = r.json()
     weather_df = pd.DataFrame(weather_df)
-    weather_df.to_json(CURR_DIR_PATH + '/weather-output.json', index=False)
+    weather_df.to_json(CURR_DIR_PATH + '/data/weather-output.json', index=False)
 
 _write_weather_log()
 
@@ -21,7 +21,7 @@ def _write_weather_log2():
     weather_df = pd.DataFrame(r)
     weather_df.to_json(CURR_DIR_PATH + '/weather-output.json', index=False)
 
-_write_weather_log2()
+#_write_weather_log2()
 
 
 
