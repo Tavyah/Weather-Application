@@ -24,9 +24,10 @@ def _get_requests_api_weather(api_call: Callable) -> requests:
 
 def write_weather_log():
     locations = []
-    for city in geo_locations:
-        (lat, lon) = geo_locations[city]
-        locations.append(_get_requests_api_weather(_fetch_weather_api_sweden(lat, lon)))
+    for city, (lat, lon) in geo_locations.items():
+        weather_data = _fetch_weather_api_sweden(lat, lon)
+        
+        locations.append({"city": city, "weather_data": _get_requests_api_weather(weather_data)})
         
     with open(CURR_DIR_PATH + DATA_OUTPUT + FILENAME_OUTPUT_SWEDEN, 'w') as file:
         file.write(json.dumps(locations))
