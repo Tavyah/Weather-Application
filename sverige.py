@@ -32,5 +32,3 @@ def write_weather_log():
     with open(CURR_DIR_PATH + DATA_OUTPUT + FILENAME_OUTPUT_SWEDEN, 'w') as file:
         file.write(json.dumps(locations))
     file.close()
-
-write_weather_log()
