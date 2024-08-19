@@ -1,50 +1,42 @@
-import requests, os, configparser
-import pandas as pd
+import requests, os
 from typing import Callable
+import json
+import pandas as pd
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_OUTPUT = '/data/'
-FILENAME_OUTPUT_SMHI = 'weather_output_smhi.json'
-FILENAME_OUTPUT_MET = 'weather_output_met.json'
+DATA_OUTPUT = CURR_DIR_PATH + '/data/'
 
 geo_locations = {
     "Oslo": (59.9, 10.8),
-    "Stockholm": (43, 34.32)
+    "Stockholm": (59.3, 18.1)
 }
+    
+def _get_weather_data(lat, lon, weather_service):
 
-def _fetch_weather_api_smhi(lat: float, lon: float) -> str:
-    return f'https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{lon}/lat/{lat}/data.json'
-        
-def _get_requests_api_weather(api_call: Callable) -> requests:
-    r = requests.get(api_call)
-    if r.status_code == 200:
-        return r
-    else:
-        return f'Error: Recieved status code {r.status_code}'
-
-def write_weather_log_smhi():
-    locations = []
-    for city in geo_locations:
-        (lat, lon) = geo_locations[city]
-        locations.append(_get_requests_api_weather(_fetch_weather_api_smhi(lat, lon)))
-
-    weather_df = pd.DataFrame(locations)
-    weather_df.to_json(CURR_DIR_PATH + DATA_OUTPUT + FILENAME_OUTPUT_SMHI, index=False)
-
-write_weather_log_smhi()
-
-def _write_weather_log_met():
-    headers = {
-        'User-Agent': 'MyWeatherApp/1.0 (paal.runde@gmail.com)' 
-    }
-
-    r = requests.get('https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=59.9&lon=10.8', headers=headers)
+    if weather_service == 'met':
+        headers = {
+            'User-Agent': 'MyWeatherApp/1.0 (paal.runde@gmail.com)' 
+        }
+        r = requests.get(f'https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={lat}&lon={lon}', headers=headers)
+    elif weather_service == 'smhi':
+        r = requests.get(f'https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{lon}/lat/{lat}/data.json')
 
     if r.status_code == 200:
-        weather_df = r.json()
-        weather_df = pd.DataFrame(weather_df)
-        weather_df.to_json(CURR_DIR_PATH + '/data/weather-output-met.json', index=False)
+        return r.json()
     else:
         print(f"Error: Received status code {r.status_code}")
 
-_write_weather_log_met()
+def _write_weather_log(weather_service):
+    all_weather_data = []
+
+    for city, (lat, lon) in geo_locations.items():
+        weather_data = _get_weather_data(lat, lon, weather_service)
+        
+        all_weather_data.append({"city": city, "weather_data": weather_data})
+        
+    with open(DATA_OUTPUT + f'weather_output_{weather_service}.json', 'w') as json_file:
+        json.dump(all_weather_data, json_file)
+
+
+_write_weather_log('smhi')
+_write_weather_log('met')
