@@ -30,7 +30,7 @@ def _combine_to_dataframe(city_list: list) -> pd.DataFrame:
     return combined_df
 
 def write_df_to_csv():
-    df = _combine_to_dataframe(_separate_list_elements(FILE1))
-    df.to_csv(CURR_DIR_PATH + DATA_OUTPUT + 'weather_data.csv', index=False)
+    df = _combine_to_dataframe(_separate_list_elements(FILE2))
+    df.to_csv(CURR_DIR_PATH + DATA_OUTPUT + 'weather_data_met.csv', index=False)
 
 write_df_to_csv()
