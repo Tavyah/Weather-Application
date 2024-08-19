@@ -1,6 +1,6 @@
 import requests, os, configparser
 import pandas as pd
-import json
+from typing import Callable
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_OUTPUT = '/data/'
@@ -14,7 +14,7 @@ geo_locations = {
 def _fetch_weather_api_sweden(lat: float, lon: float) -> str:
     return f'https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{lon}/lat/{lat}/data.json'
         
-def _get_requests_api_weather(api_call: function) -> requests:
+def _get_requests_api_weather(api_call: Callable) -> requests:
     return requests.get(api_call)
 
 def write_weather_log():
