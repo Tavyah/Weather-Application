@@ -15,7 +15,11 @@ def _fetch_weather_api_sweden(lat: float, lon: float) -> str:
     return f'https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{lon}/lat/{lat}/data.json'
         
 def _get_requests_api_weather(api_call: Callable) -> requests:
-    return requests.get(api_call)
+    r = requests.get(api_call)
+    if r == 200:
+        return r
+    else:
+        return f'Error: Recieved status code {r.status_code}'
 
 def write_weather_log():
     locations = []
