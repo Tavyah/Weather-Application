@@ -8,8 +8,8 @@ DATA_OUTPUT = '/data/'
 FILENAME_OUTPUT_SWEDEN = 'weather_output_smhi.json'
 
 geo_locations = {
-    "Oslo": (59.9, 17.6),
-    "Stockholm": (43, 34.32)
+    "Oslo": (59.9, 10.8),
+    "Stockholm": (59.3, 18.1)
 }
 
 def _fetch_weather_api_sweden(lat: float, lon: float) -> str:
