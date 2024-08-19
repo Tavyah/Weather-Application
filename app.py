@@ -4,20 +4,6 @@ import json
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
-# Initializes configuration from the config.ini file
-config = configparser.ConfigParser()
-config.read(CURR_DIR_PATH + "/config.ini")
-
-geo_locations = {
-    "uppsala": (59.9, 17.6),
-    "östersund": (63.2, 14.6),
-    "luleå": (65.6, 22.1),
-    "göteborg": (57.7, 12),
-    "oslo": (59.9, 10.8)
-}
-
-# Fetches the api key from your config.ini file
-
 def _write_weather_log():
 
     r = requests.get('https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=59.9&lon=10.8')
