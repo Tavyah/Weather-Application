@@ -6,6 +6,8 @@ from sqlalchemy import create_engine
 
 
 CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+DATA_OUTPUT = '/data/'
+FILENAME_INPUT_MET = 'weather_data_oslo_met.csv'
 
 config = configparser.ConfigParser()
 
@@ -28,6 +30,11 @@ postgres_engine = create_engine(
 
 # Data processing
 #TODO READ FROM DF
-weather_data = pd.DataFrame()
+weather_data_path = CURR_DIR_PATH + DATA_OUTPUT + FILENAME_INPUT_MET
+
+weather_data = pd.read_csv(
+    weather_data_path,
+    sep=","
+)
 
 weather_data.to_sql(name="weather_data", con=postgres_engine, if_exists="replace", index=False)
