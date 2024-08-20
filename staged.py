@@ -15,7 +15,7 @@ config.read(CURR_DIR_PATH + "/config.ini")
 db_pw = config.get("DEV", "weather_data_db_pw")
 db_user = config.get('DEV', 'weather_data_db_user')
 
-def postgres_creator():
+def postgres_creator() -> ps:
   return ps.connect(
         dbname="weather_app_db",  
         user=db_user,
