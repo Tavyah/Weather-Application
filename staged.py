@@ -29,7 +29,7 @@ postgres_engine = create_engine(
 )
 
 # Data processing
-#TODO READ FROM DF
+#TODO READ FROM DF OR CSV?
 weather_data_path = CURR_DIR_PATH + DATA_OUTPUT + FILENAME_INPUT_MET
 
 weather_data = pd.read_csv(
