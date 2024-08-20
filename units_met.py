@@ -7,7 +7,7 @@ def _units_met() -> dict:
           "relative_humidity": "%",
           "wind_from_direction": "degrees",
           "wind_speed": "m/s"
-  }
+}
 
 def unit(weather_parameter: str) -> str:
   units = _units_met()

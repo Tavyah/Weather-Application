@@ -1,38 +1,45 @@
 from dash import Dash, dcc, html, Input, Output
-import os
-import pandas as pd
 import plotly.graph_objects as oGraph
 import graph_display
 import units_met
+import dataframe_handler as df_handler
 
 def main():
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    data_folder = '/data/'
-    filename = '/oslo_met.csv'
-    filepath = current_dir + data_folder + filename
-
-    df = pd.read_csv(filepath)
     app = Dash(__name__)
 
     app_layout(app)
     @app.callback(
-        Output(component_id='graph-plty', component_property='figure'),
+        Output(component_id='graph-plotly', component_property='figure'),
         [Input(component_id='dropdown', component_property='value'),
         Input(component_id='checklist_plot', component_property='value'),
         Input(component_id='checklist_api', component_property='value')]
     )
-    def update_graph(dropdownValue, checklistValue, api):
+    def update_graph(dropdownValue, checklistValue, api_list):
         figure = oGraph.Figure()
         
-        if 'bar' in checklistValue:
-            figure_bar = graph_display.bar_graph(df, dropdownValue)
-            figure.add_traces(figure_bar.data)
+        if 'MET' in api_list: 
+            df = df_handler.get_dataframe('MET')
+            if 'bar' in checklistValue:
+                figure_bar = graph_display.bar_graph(df, dropdownValue)
+                figure.add_traces(figure_bar.data)
+                
+            if 'line' in checklistValue:
+                figure_line = graph_display.line_graph(df, dropdownValue)
+                figure.add_traces(figure_line.data)
             
-        if 'line' in checklistValue:
-            figure_line = graph_display.line_graph(df, dropdownValue)
-            figure.add_traces(figure_line.data)
-        
-        figure = graph_display.make_labels(figure, dropdownValue, name_strip(filename), units_met.unit(dropdownValue))
+            figure = graph_display.make_labels(figure, dropdownValue, df_handler.get_name(api_list), units_met.unit(dropdownValue), df_handler.get_date(api_list))
+
+        if 'SMHI' in api_list:
+            df = df_handler.get_dataframe('SMHI')
+            if 'bar' in checklistValue:
+                figure_bar = graph_display.bar_graph(df, dropdownValue)
+                figure.add_traces(figure_bar.data)
+                
+            if 'line' in checklistValue:
+                figure_line = graph_display.line_graph(df, dropdownValue)
+                figure.add_traces(figure_line.data)
+            
+            figure = graph_display.make_labels(figure, dropdownValue, df_handler.get_name(api_list), units_met.unit(dropdownValue), df_handler.get_date(api_list))
 
         return figure
     
@@ -62,14 +69,9 @@ def init_app():
             {'label': 'Meteorologisk institutt', 'value': 'MET'},
             {'label': 'Sveriges meteorologiska och hydrologiska institut','value': 'SMHI'}
         ], value = ['MET']),
-        dcc.Graph(id='graph-plty')
+        dcc.Graph(id='graph-plotly')
     ])
     return init_layout
-
-def name_strip(filename: str) -> str:
-    split_name, _ = filename.split('_')
-    stripped_name = split_name.strip('/')
-    return stripped_name
 
 if __name__ == '__main__':
     main()
