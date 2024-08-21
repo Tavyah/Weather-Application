@@ -17,7 +17,7 @@ db_user = config.get('DEV', 'weather_data_db_user')
 
 def postgres_creator() -> ps:
   return ps.connect(
-        dbname="weather_app_db",  
+        dbname="weather_db",  
         user=db_user,
         password=db_pw,
         host="localhost"
@@ -37,4 +37,23 @@ weather_data = pd.read_csv(
     sep=","
 )
 
-weather_data.to_sql(name="weather_data", con=postgres_engine, if_exists="replace", index=False)
+data = weather_data.to_sql(name="weather_db", con=postgres_engine, if_exists="replace", index=False)
+
+print(weather_data)
+# Change dbname to be the name of your schema and user to be the owner of said database schema
+conn = ps.connect(dbname="weather_db", user=db_user)
+ 
+cur = conn.cursor()
+ 
+cur.execute("CREATE TABLE IF NOT EXISTS weather_data (id SERIAL PRIMARY KEY, time VARCHAR(30),air_pressure_at_sea_level DECIMAL,air_temperature DECIMAL,cloud_area_fraction DECIMAL,relative_humidity DECIMAL,wind_from_direction DECIMAL,wind_speed DECIMAL,next_1_hours_precipitation_amount DECIMAL);")
+ 
+cur.execute("INSERT INTO weather_data (time, air_pressure_at_sea_level, air_temperature,cloud_area_fraction,relative_humidity,wind_from_direction,wind_speed,next_1_hours_precipitation_amount) VALUES ('%s, %s, %s, %s, %s, %s, %s, %s');", 
+            (data))
+cur.execute("SELECT * FROM weather_data;")
+ 
+cur.fetchone()
+ 
+conn.commit()
+ 
+cur.close()
+conn.close()
