@@ -12,13 +12,14 @@ def main():
         Output(component_id='graph-plotly', component_property='figure'),
         [Input(component_id='dropdown', component_property='value'),
         Input(component_id='checklist_plot', component_property='value'),
-        Input(component_id='checklist_api', component_property='value')]
+        Input(component_id='checklist_api', component_property='value'),
+        Input(component_id='cities', component_property='value')]
     )
-    def update_graph(dropdownValue, checklistValue, api_list):
+    def update_graph(dropdownValue, checklistValue, api_list, cities):
         figure = oGraph.Figure()
         
         if 'MET' in api_list: 
-            df = df_handler.get_dataframe('MET')
+            df = df_handler.get_dataframe('MET', cities)
             if 'bar' in checklistValue:
                 figure_bar = graph_display.bar_graph(df, dropdownValue)
                 figure.add_traces(figure_bar.data)
@@ -27,10 +28,10 @@ def main():
                 figure_line = graph_display.line_graph(df, dropdownValue)
                 figure.add_traces(figure_line.data)
             
-            figure = graph_display.make_labels(figure, dropdownValue, df_handler.get_name(api_list), units_met.unit(dropdownValue), df_handler.get_date(api_list))
+            figure = graph_display.make_labels(figure, dropdownValue, df_handler.get_name(api_list, cities), units_met.unit(dropdownValue), df_handler.get_date(api_list, cities))
 
         if 'SMHI' in api_list:
-            df = df_handler.get_dataframe('SMHI')
+            df = df_handler.get_dataframe('SMHI', cities)
             if 'bar' in checklistValue:
                 figure_bar = graph_display.bar_graph(df, dropdownValue)
                 figure.add_traces(figure_bar.data)
@@ -39,7 +40,7 @@ def main():
                 figure_line = graph_display.line_graph(df, dropdownValue)
                 figure.add_traces(figure_line.data)
             
-            figure = graph_display.make_labels(figure, dropdownValue, df_handler.get_name(api_list), units_met.unit(dropdownValue), df_handler.get_date(api_list))
+            figure = graph_display.make_labels(figure, dropdownValue, df_handler.get_name(api_list, cities), units_met.unit(dropdownValue), df_handler.get_date(api_list, cities))
 
         return figure
     
@@ -69,7 +70,11 @@ def init_app():
             {'label': 'Meteorologisk institutt', 'value': 'MET'},
             {'label': 'Sveriges meteorologiska och hydrologiska institut','value': 'SMHI'}
         ], value = ['MET']),
-        dcc.Graph(id='graph-plotly')
+        dcc.Graph(id='graph-plotly'),
+        dcc.Dropdown(id='cities', options= [
+            {'label': 'Oslo', 'value': 'oslo'},
+            {'label': 'Stockholm', 'value': 'stockholm'}
+        ], value = 'oslo')
     ])
     return init_layout
 
