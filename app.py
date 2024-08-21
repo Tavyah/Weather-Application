@@ -21,11 +21,11 @@ def main():
         if 'MET' in api_list: 
             df = df_handler.get_dataframe('MET', cities)
             if 'bar' in checklistValue:
-                figure_bar = graph_display.bar_graph(df, dropdownValue)
+                figure_bar = graph_display.bar_graph(df, dropdownValue, df_handler.get_name(api_list, cities))
                 figure.add_traces(figure_bar.data)
                 
             if 'line' in checklistValue:
-                figure_line = graph_display.line_graph(df, dropdownValue)
+                figure_line = graph_display.line_graph(df, dropdownValue, df_handler.get_name(api_list, cities))
                 figure.add_traces(figure_line.data)
             
             figure = graph_display.make_labels(figure, dropdownValue, df_handler.get_name(api_list, cities), units_met.unit(dropdownValue), df_handler.get_date(api_list, cities))
@@ -33,11 +33,11 @@ def main():
         if 'SMHI' in api_list:
             df = df_handler.get_dataframe('SMHI', cities)
             if 'bar' in checklistValue:
-                figure_bar = graph_display.bar_graph(df, dropdownValue)
+                figure_bar = graph_display.bar_graph(df, dropdownValue, df_handler.get_name(api_list, cities))
                 figure.add_traces(figure_bar.data)
                 
             if 'line' in checklistValue:
-                figure_line = graph_display.line_graph(df, dropdownValue)
+                figure_line = graph_display.line_graph(df, dropdownValue, df_handler.get_name(api_list, cities))
                 figure.add_traces(figure_line.data)
             
             figure = graph_display.make_labels(figure, dropdownValue, df_handler.get_name(api_list, cities), units_met.unit(dropdownValue), df_handler.get_date(api_list, cities))
@@ -70,13 +70,20 @@ def init_app():
             {'label': 'Meteorologisk institutt', 'value': 'MET'},
             {'label': 'Sveriges meteorologiska och hydrologiska institut','value': 'SMHI'}
         ], value = ['MET']),
-        dcc.Graph(id='graph-plotly'),
+        dcc.Graph(id='graph-plotly', style= graph_style),
         dcc.Dropdown(id='cities', options= [
             {'label': 'Oslo', 'value': 'oslo'},
             {'label': 'Stockholm', 'value': 'stockholm'}
         ], value = 'oslo')
     ])
     return init_layout
+
+# CSS code
+graph_style = {
+    'height': '100%',
+    'maxHeight': '600px'
+}
+
 
 if __name__ == '__main__':
     main()
