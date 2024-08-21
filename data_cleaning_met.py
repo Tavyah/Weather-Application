@@ -3,7 +3,7 @@ import pandas as pd
 #divide weather data based on city
 weather_data = pd.read_json('data/weather_output_met.json')
 
-def process_weather_data(weather_data, city_name):
+def process_met_weather_data(weather_data, city_name):
     city_lower = city_name.lower()
 
     city_data = weather_data[weather_data['city'] == city_name].iloc[0]
@@ -36,5 +36,5 @@ def process_weather_data(weather_data, city_name):
     city_df_mod.to_csv(f'data/{city_lower}_met.csv', index=False)
 
 
-process_weather_data(weather_data, 'Oslo')
-process_weather_data(weather_data, 'Stockholm')
+process_met_weather_data(weather_data, 'Oslo')
+process_met_weather_data(weather_data, 'Stockholm')
