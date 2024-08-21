@@ -1,9 +1,15 @@
 import pandas as pd
+import os
+import logging
 
-weather_data_met = pd.read_json('data/weather_output_met.json')
-weather_data_smhi = pd.read_json('data/weather_output_smhi.json')
+CURR_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
+DATA_OUTPUT = CURR_DIR_PATH + '/data/'
 
-def process_met_weather_data(weather_data, city_name):
+def process_met_weather_data(city_name):
+    logging.info(f"Current working directory: {os.getcwd()}")
+
+    file_path = 'airflow/dags/weather_app/data/weather_output_met.json'
+    weather_data = pd.read_json(file_path)
     city_lower = city_name.lower()
 
     city_data = weather_data[weather_data['city'] == city_name].iloc[0]
@@ -33,10 +39,14 @@ def process_met_weather_data(weather_data, city_name):
     #decimal precision of 1
     city_df_mod = city_df_mod.round(1)
 
-    city_df_mod.to_csv(f'data/{city_lower}_met.csv', index=False)
+    city_df_mod.to_csv(DATA_OUTPUT + f'{city_lower}_met.csv', index=False)
 
-def process_smhi_weather_data(weather_data, city_name):
+def process_smhi_weather_data(city_name):
+    logging.info(f"Current working directory: {os.getcwd()}")
+        
     city_lower = city_name.lower()
+    file_path = DATA_OUTPUT + 'weather_output_smhi.json'
+    weather_data = pd.read_json(file_path)
     
     city_data = weather_data[weather_data['city'] == city_name].iloc[0]
  
@@ -65,11 +75,4 @@ def process_smhi_weather_data(weather_data, city_name):
 
     smhi_city_df_pivot = smhi_city_df_pivot[['time', 'air_pressure_at_sea_level','air_temperature','cloud_area_fraction','relative_humidity','wind_from_direction','wind_speed','next_1_hours_precipitation_amount']]
 
-    smhi_city_df_pivot.to_csv(f'data/{city_lower}_smhi.csv', index=False)
-
-
-process_smhi_weather_data(weather_data_smhi, 'Stockholm')
-process_smhi_weather_data(weather_data_smhi, 'Oslo')
-
-process_met_weather_data(weather_data_met, 'Oslo')
-process_met_weather_data(weather_data_met, 'Stockholm')
+    smhi_city_df_pivot.to_csv(DATA_OUTPUT + f'{city_lower}_smhi.csv', index=False)
