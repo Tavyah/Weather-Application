@@ -6,6 +6,7 @@ import os
 
 from weather_app import extract_data as get_from_api
 from weather_app import harmonization as harmonization
+from weather_app import staged as staged
 
 
 #Her kommer funksjonen for API get request som henter og lagrer data i rå format: 
@@ -27,7 +28,10 @@ def _transform_data():
 
 #Her kommer funksjonen for Staging med Postgres SQL: 
 def _load_data():
-    pass
+    staged.process_and_insert('oslo_met.csv', 'oslo_met')
+    staged.process_and_insert('oslo_smhi.csv', 'oslo_smhi')
+    staged.process_and_insert('stockholm_met.csv', 'stockholm_met')
+    staged.process_and_insert('stockholm_smhi.csv', 'stockholm_smhi')
 
 
 with DAG("weatherAPI_dag", start_date=datetime(2021, 1, 1),

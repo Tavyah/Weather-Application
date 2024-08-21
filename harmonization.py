@@ -42,8 +42,6 @@ def process_met_weather_data(city_name):
     city_df_mod.to_csv(DATA_OUTPUT + f'{city_lower}_met.csv', index=False)
 
 def process_smhi_weather_data(city_name):
-    logging.info(f"Current working directory: {os.getcwd()}")
-        
     city_lower = city_name.lower()
     file_path = DATA_OUTPUT + 'weather_output_smhi.json'
     weather_data = pd.read_json(file_path)
