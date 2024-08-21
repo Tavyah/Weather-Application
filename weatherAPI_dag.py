@@ -4,7 +4,6 @@ from datetime import datetime
 from airflow.operators.bash import BashOperator
 import os
 
-#Våre egne imports 
 from weather_app import extract_data as get_from_api
 from weather_app import harmonization as harmonization
 
