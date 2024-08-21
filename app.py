@@ -3,8 +3,10 @@ import plotly.graph_objects as oGraph
 import graph_display
 import units_met
 import dataframe_handler as df_handler
+import get_api
 
 def main():
+    get_api.api_data()
     app = Dash(__name__)
 
     app_layout(app)
@@ -83,7 +85,6 @@ graph_style = {
     'height': '100%',
     'maxHeight': '600px'
 }
-
 
 if __name__ == '__main__':
     main()

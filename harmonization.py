@@ -8,7 +8,7 @@ DATA_OUTPUT = CURR_DIR_PATH + '/data/'
 def process_met_weather_data(city_name):
     logging.info(f"Current working directory: {os.getcwd()}")
 
-    file_path = 'airflow/dags/weather_app/data/weather_output_met.json'
+    file_path = DATA_OUTPUT + 'weather_output_met.json'
     weather_data = pd.read_json(file_path)
     city_lower = city_name.lower()
 
