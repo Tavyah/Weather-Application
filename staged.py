@@ -38,3 +38,4 @@ weather_data = pd.read_csv(
 )
 
 weather_data.to_sql(name="weather_data", con=postgres_engine, if_exists="replace", index=False)
+
